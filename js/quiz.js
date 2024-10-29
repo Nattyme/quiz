@@ -40,15 +40,22 @@ const checkOnAnswer = function (card) {
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'next') {
     const result = checkOnAnswer(cards[currentIndex]);
 
+    // Get answers wrapper
+    const answerWrapper = cards[currentIndex].querySelector('[data-answers');
+
     if (result) {
       // Hide current card
       cards[currentIndex].classList.remove('visible');
       currentIndex =  currentIndex + 1;
 
+      // Delete error border
+      answerWrapper.classList.remove('required');
+
       // Show the next card
       cards[currentIndex].classList.add('visible');
     } else {
-      console.log('enter answer');
+      // Display error border
+      answerWrapper.classList.add('required');
     }
     
     
