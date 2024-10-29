@@ -64,39 +64,20 @@ const updateProgressBar = function (goTo = 'start') {
   
 }
 
-const cardDisplay = function (goTo) {
-
-  setTimeout( function () {
-
-    // Stop function if we go to prev card and an index = 0
-    if ( goTo === 'prev' && currentIndex === 0) return;
-
-    // Hide current card with animation
-    cards[currentIndex].classList.remove('visible');
-    
-
-    // Fully hide current card
-    setTimeout( function () {
-
-      // Hide current card fully
-      cards[currentIndex].classList.add('none');
-
-      // Count index depend on goTo
+// Funtion display and hide cards with slow mode animation
+const cardDisplay = function (goTo, answerWrapper) {
+  
+  // Function count current index
+  const cardIndex = function (goTo) {
       if (goTo === 'next') {
         currentIndex =  currentIndex + 1;
       } else if (goTo === 'prev') {
         currentIndex =  currentIndex - 1;
       }
+  }
 
-      // Display card. Prepare for animation
-      cards[currentIndex].classList.remove('none');
-
-      // Display the prev card with animation
-      setTimeout( function () {
-        cards[currentIndex].classList.add('visible');
-      }, 100);
-    }, 500);
-
+  // Function handling additional operations for the next card
+  const doNextCardSpecialMoves = function (goTo, answerWrapper) {
     if (goTo === 'next') {
       // Delete error border
       answerWrapper.classList.remove('required');
@@ -104,8 +85,56 @@ const cardDisplay = function (goTo) {
       // Show the next card
       cards[currentIndex].classList.add('visible');
     }
+  }
 
- }, 500);
+  // Animation for card display
+  const animatedCardDisplay = function (ms) {
+    setTimeout( function () {
+      cards[currentIndex].classList.add('visible');
+    }, ms);
+  }
+
+  // Function hide current card fully
+  const hideCard = function (ms) {
+
+    setTimeout( function () {
+
+      // Hide current card fully
+      cards[currentIndex].classList.add('none');
+
+      // Count index depend on goTo
+      cardIndex(goTo);
+
+      // Display card. Prepare for animation
+      cards[currentIndex].classList.remove('none');
+
+      // Display the prev card with animation
+      animatedCardDisplay(100);
+
+    }, ms);
+
+  }
+
+  // Function start cards handling
+  const startingCardsHandling = function (ms) {
+    setTimeout( function () {
+
+      // Hide current card with animation
+      cards[currentIndex].classList.remove('visible');
+  
+      // Fully hide current card
+      hideCard(500);
+  
+      doNextCardSpecialMoves(goTo, answerWrapper);
+  
+    }, 500);
+  }
+  
+  // If we go to prev card but index = 0 - stop function
+  if ( goTo === 'prev' && currentIndex === 0) return;
+
+  // Start cards handling with slow mode 500ms 
+  startingCardsHandling(500);
 }
 
 // For the start progress-bar display 0%
@@ -115,19 +144,19 @@ updateProgressBar();
  form.addEventListener('click', function (e) {
   let buttonClicked = e.target;
 
+  // Get answers wrapper
+  const answerWrapper = cards[currentIndex].querySelector('[data-answers');
+
   // Check if clicked button named 'next'
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'next') {
     const result = checkOnAnswer(cards[currentIndex]);
-
-    // Get answers wrapper
-    const answerWrapper = cards[currentIndex].querySelector('[data-answers');
 
     if (result) {
       // Progress - bar
       updateProgressBar('next');
 
       // Display the next card slow mode
-      cardDisplay('next');
+      cardDisplay('next', answerWrapper);
 
     } else {
       // Display error border
@@ -141,7 +170,7 @@ updateProgressBar();
      updateProgressBar('prev');
 
      // Display prev card slow mode
-     cardDisplay('prev');
+     cardDisplay('prev', answerWrapper);
   }
 });
 
