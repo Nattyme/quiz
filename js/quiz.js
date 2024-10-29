@@ -23,6 +23,13 @@ const checkOnAnswer = function (card) {
     for (let radio of radioButtons) if ( radio.checked) return true;
   }
 
+  // Check if at least one of the checkbox is checked
+  const checkBoxes = card.querySelectorAll('input[type="checkbox"]');
+
+  if (checkBoxes.length > 0 ) {
+    for (let checkBox of checkBoxes) if (checkBox.checked) return true;
+  }
+
 }
 
 // Listen to click on form
