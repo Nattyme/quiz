@@ -64,6 +64,50 @@ const updateProgressBar = function (goTo = 'start') {
   
 }
 
+const cardDisplay = function (goTo) {
+
+  setTimeout( function () {
+
+    // Stop function if we go to prev card and an index = 0
+    if ( goTo === 'prev' && currentIndex === 0) return;
+
+    // Hide current card with animation
+    cards[currentIndex].classList.remove('visible');
+    
+
+    // Fully hide current card
+    setTimeout( function () {
+
+      // Hide current card fully
+      cards[currentIndex].classList.add('none');
+
+      // Count index depend on goTo
+      if (goTo === 'next') {
+        currentIndex =  currentIndex + 1;
+      } else if (goTo === 'prev') {
+        currentIndex =  currentIndex - 1;
+      }
+
+      // Display card. Prepare for animation
+      cards[currentIndex].classList.remove('none');
+
+      // Display the prev card with animation
+      setTimeout( function () {
+        cards[currentIndex].classList.add('visible');
+      }, 100);
+    }, 500);
+
+    if (goTo === 'next') {
+      // Delete error border
+      answerWrapper.classList.remove('required');
+
+      // Show the next card
+      cards[currentIndex].classList.add('visible');
+    }
+
+ }, 500);
+}
+
 // For the start progress-bar display 0%
 updateProgressBar();
 
@@ -82,39 +126,13 @@ updateProgressBar();
       // Progress - bar
       updateProgressBar('next');
 
-      // Moves slow down
-      setTimeout( function () {
-        // Hide current card with animation
-        cards[currentIndex].classList.remove('visible');
+      // Display the next card slow mode
+      cardDisplay('next');
 
-        setTimeout(function () {
-          // Hide current card fully
-          cards[currentIndex].classList.add('none');
-
-          // Display the next card. Prepare for animation
-          currentIndex =  currentIndex + 1;
-          cards[currentIndex].classList.remove('none');
-
-          // Display the next card with animation
-          setTimeout( function () {
-            cards[currentIndex].classList.add('visible');
-          }, 100)
-        }, 500);
-
-        // Delete error border
-        answerWrapper.classList.remove('required');
-
-        // Show the next card
-        cards[currentIndex].classList.add('visible');
-      }, 500);
-
-     
     } else {
       // Display error border
       answerWrapper.classList.add('required');
     }
-    
-    
   }
 
   // Check if clicked button named 'back'
@@ -122,36 +140,9 @@ updateProgressBar();
      // Progress - bar
      updateProgressBar('prev');
 
-     // Moves slow down
-     setTimeout( function () {
-        // Stop function word if index is 0
-        if (currentIndex === 0) return;
-      
-
-        // Hide current card
-        cards[currentIndex].classList.remove('visible');
-
-        // Fully hide current card
-        setTimeout( function () {
-          cards[currentIndex].classList.add('none');
-
-          // Count prev card index and prepare it for animation
-          currentIndex = currentIndex - 1;
-          cards[currentIndex].classList.remove('none');
-
-           // Display the prev card with animation
-           setTimeout( function () {
-             cards[currentIndex].classList.add('visible');
-           }, 100);
-
-        }, 500)
-
-     
-     }, 500);
-
-    
+     // Display prev card slow mode
+     cardDisplay('prev');
   }
-
 });
 
 // Form validate
