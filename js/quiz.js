@@ -32,6 +32,19 @@ const checkOnAnswer = function (card) {
 
 }
 
+// Function controls progress - bar
+const updateProgressBar = function () {
+  const progressValue = document.querySelector('.progress__label');
+  const progressLineBar = document.querySelector('.progress__line-bar');
+
+  const cardsToCount = document.querySelectorAll('[data-progress]').length;
+  console.log(cardsToCount);
+   
+  const progress = Math.round(1 * 100 / cardsToCount);
+  console.log(progress);
+}
+updateProgressBar();
+
 // Listen to click on form
  form.addEventListener('click', function (e) {
   let buttonClicked = e.target;
