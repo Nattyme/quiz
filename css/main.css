@@ -20,7 +20,7 @@ p + p {
 }
 
 .hidden, .none {
-	display: none;
+	display: none  !important;
 }
 
 .plate {
@@ -33,33 +33,23 @@ p + p {
 	border-radius: 12px;
 	box-shadow: 0px 1px 52.25px 2.75px rgba(33, 62, 33, 0.5);
 
-	/* A) Просто перемещение по карточкам */
-	display: none;
 
-	/* B) Просто перемещение по карточкам с анимацией */
-	/* position: relative;
+	position: relative;
 	opacity: 0;
-    visibility: hidden;
+  visibility: hidden;
 	left: -30px;
-    transition:
-		opacity 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36),
-		visibility 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36),
-		left 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36)
-	; */
+  transition:
+    opacity 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36),
+    visibility 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36),
+    left 500ms cubic-bezier(0.335, 0.01, 0.03, 1.36)
+	; 
 }
 
-/* A) Просто перемещение по карточкам */
 .plate.visible {
-	display: flex;
-}
-
-/* B) Просто перемещение по карточкам с анимацией */
-
-/* .plate.visible {
 	opacity: 1;
-    visibility: visible;
+  visibility: visible;
 	left: 0;
-} */
+} 
 
 .cover-content-wrapper {
 	width: 100%;

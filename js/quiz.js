@@ -1,12 +1,13 @@
 // Get all cards
 const cards = document.querySelectorAll('.plate');
-
 // Get a form
 const form = document.querySelector('.quiz-form');
 
-// Current index for cards move
-let currentIndex = 3;
+// Hide all cards
+cards.forEach(card => {card.classList.add('none')});
 
+// Current index for cards move
+let currentIndex = 0;
 // Current index for progress bar
 let currentCard = 0;
 
@@ -14,6 +15,7 @@ let currentCard = 0;
 cards[0].querySelector('[data-nav="prev"]').remove();
 
 // Display the 1st card 
+cards[currentIndex].classList.remove('none');
 cards[currentIndex].classList.add('visible');
 
 // Function checks the current answer
@@ -82,10 +84,22 @@ updateProgressBar();
 
       // Moves slow down
       setTimeout( function () {
-
-        // Hide current card
+        // Hide current card with animation
         cards[currentIndex].classList.remove('visible');
-        currentIndex =  currentIndex + 1;
+
+        setTimeout(function () {
+          // Hide current card fully
+          cards[currentIndex].classList.add('none');
+
+          // Display the next card. Prepare for animation
+          currentIndex =  currentIndex + 1;
+          cards[currentIndex].classList.remove('none');
+
+          // Display the next card with animation
+          setTimeout( function () {
+            cards[currentIndex].classList.add('visible');
+          }, 100)
+        }, 500);
 
         // Delete error border
         answerWrapper.classList.remove('required');
@@ -116,10 +130,23 @@ updateProgressBar();
 
         // Hide current card
         cards[currentIndex].classList.remove('visible');
-        currentIndex -= 1;
 
-        // Show the next card
-        cards[currentIndex].classList.add('visible');
+        // Fully hide current card
+        setTimeout( function () {
+          cards[currentIndex].classList.add('none');
+
+          // Count prev card index and prepare it for animation
+          currentIndex = currentIndex - 1;
+          cards[currentIndex].classList.remove('none');
+
+           // Display the prev card with animation
+           setTimeout( function () {
+             cards[currentIndex].classList.add('visible');
+           }, 100);
+
+        }, 500)
+
+     
      }, 500);
 
     
