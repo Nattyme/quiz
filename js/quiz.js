@@ -13,6 +13,17 @@ cards[0].querySelector('[data-nav="prev"]').remove();
 // Display the 1st card 
 cards[currentIndex].classList.add('visible');
 
+// Function checks the current answer
+const checkOnAnswer = function (card) {
+  // Get all radio buttons
+  const radioButtons = card.querySelectorAll('input[type="radio"]');
+
+  // Check if at least one of the radio buttons is checked
+  if ( radioButtons.length > 0) {
+    for (let radio of radioButtons) if ( radio.checked) return true;
+  }
+
+}
 
 // Listen to click on form
  form.addEventListener('click', function (e) {
@@ -20,14 +31,20 @@ cards[currentIndex].classList.add('visible');
 
   // Check if clicked button named 'next'
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'next') {
-    
-    // Hide current card
-    cards[currentIndex].classList.remove('visible');
-    currentIndex =  currentIndex + 1;
-      console.log(currentIndex);
+    const result = checkOnAnswer(cards[currentIndex]);
 
-    // Show the next card
-    cards[currentIndex].classList.add('visible');
+    if (result) {
+      // Hide current card
+      cards[currentIndex].classList.remove('visible');
+      currentIndex =  currentIndex + 1;
+
+      // Show the next card
+      cards[currentIndex].classList.add('visible');
+    } else {
+      console.log('enter answer');
+    }
+    
+    
   }
 
   // Check if clicked button named 'back'
@@ -43,5 +60,8 @@ cards[currentIndex].classList.add('visible');
      // Show the next card
      cards[currentIndex].classList.add('visible');
   }
-  
+
 });
+
+
+
