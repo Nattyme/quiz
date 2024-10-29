@@ -5,7 +5,7 @@ const cards = document.querySelectorAll('.plate');
 const form = document.querySelector('.quiz-form');
 
 // Current index for cards move
-let currentIndex = 0;
+let currentIndex = 3;
 
 // Current index for progress bar
 let currentCard = 0;
@@ -125,6 +125,31 @@ updateProgressBar();
     
   }
 
+});
+
+// Form validate
+const submitForm = document.querySelector('#submitForm');
+const telInput = document.querySelector('#tel');
+
+submitForm.onclick = function () {
+  if (telInput.value === '+' || telInput.value.length < 6) {
+    telInput.value = '';
+  }
+}
+
+// phone mask
+mask('#tel');
+
+// Checbox focus border display by tab
+const checkBoxPolicy = document.querySelector('#policy');
+
+checkBoxPolicy.addEventListener ('focus', function () {
+console.log('focus');
+this.closest('label').classList.add('hovered');
+});
+
+checkBoxPolicy.addEventListener ('blur', function () {
+  this.closest('label').classList.remove('hovered');
 });
 
 
