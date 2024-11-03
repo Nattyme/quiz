@@ -1,14 +1,29 @@
-// Get all cards
-const cards = document.querySelectorAll('.plate');
+// Template
+import createCards from './modules/create-card/cards.js';
 
-// Get a form
+
+// // Get a form
 const form = document.querySelector('.quiz-form');
+
+// Заполняем массив карточками
+const cardsTmpl = [];
+cardsTmpl.push(createCards.createCards('radio', 'radio', 'Что означает сокращение HTML?'));
+cardsTmpl.push(createCards.createCards('checkbox', 'checkbox', 'Что означает сокращение HTML?'));
+cardsTmpl.push(createCards.createCards('cards', 'radio', 'На HTML можно создавать: '));
+// cardsTmpl.push(createCards.createCards('radio'));
+
+
+// Обходим каждую карточку и выводим на страницу
+// Здесь карточки приходят как HTMl, нельзя менять класс. 
+cardsTmpl.forEach( card => {
+  form.insertAdjacentHTML('beforeend', card);
+});
+
+const cards = document.querySelectorAll('.plate');
 
 // Find navigation buttons
 const buttonsNavWrapper = document.querySelectorAll('.plate-footer__buttons');
 
-// Hide all cards
-cards.forEach(card => {card.classList.add('none')});
 
 // Current index for cards move
 let currentIndex = 0;
@@ -16,22 +31,28 @@ let currentIndex = 0;
 // Current index for progress bar
 let currentCard = 0;
 
+// Hide all cards
+cards.forEach((card, index) => {
+  card.classList.add('none');
+  if (index === currentIndex) {
+    card.classList.remove('none');
+    card.classList.add('visible');
+  }
+});
+
+
 // Get the first card button "back" and delete it
 cards[currentIndex].querySelector('[data-nav="prev"]').remove();
 
-// Display the 1st card 
-cards[currentIndex].classList.remove('none');
-cards[currentIndex].classList.add('visible');
 
 // Function checks the current answer
 const checkOnAnswer = function (card) {
   const radioButtons = card.querySelectorAll('input[type="radio"]');   // Get all radio buttons
   const checkboxButtons = card.querySelectorAll('input[type="checkbox"]');   // Get all checkbox buttons
-
   const radioButtonsWrapper = card.querySelectorAll('.radio-group'); // Get answers wrapper
   const checkboxButtonsWrapper = card.querySelectorAll('.checkbox-group'); // Get answers wrapper
 
-  if (radioButtons) {
+  if (radioButtons.length) {
     // Set attr 'data-radio' for each radio button on a current card
     radioButtons.forEach( radioButton => {
       radioButton.setAttribute('data-radio', '');
@@ -41,19 +62,8 @@ const checkOnAnswer = function (card) {
     radioButtonsWrapper.forEach( radioGroup => {
       radioGroup.setAttribute('data-answers', 'radio-group');
     });
-  } else if (checkboxButtons) {
-    // Set attr 'data-checkbox' for each checkbox button on a current card
-    checkboxButtons.forEach( checkboxButton => {
-      checkboxButton.setAttribute('data-checkbox', '');
-    });
 
-    // Set attr for each checkboxButtonsWrapper of radio buttons on a current card data-answers', 'radio-group
-    checkboxButtonsWrapper.forEach( checkboxGroup => {
-      checkboxGroup.setAttribute('data-answers', 'checkbox-group');
-    });
-  }
   
-  if (radioButtons) {
     // Get parents radio buttons group by data-answers = radio-group
     const radioButtonsParent = cards[currentIndex].querySelectorAll('[data-answers="radio-group"]');
 
@@ -79,11 +89,22 @@ const checkOnAnswer = function (card) {
     });
 
     if (groupsChecked === radioButtonsParent.length) {
-      console.log('here');
       return true;
     } 
+  
+  } 
+  
+  if (checkboxButtons.length) {
+    // Set attr 'data-checkbox' for each checkbox button on a current card
+    checkboxButtons.forEach( checkboxButton => {
+      checkboxButton.setAttribute('data-checkbox', '');
+    });
 
-  } else if (checkboxButtons) {
+    // Set attr for each checkboxButtonsWrapper of radio buttons on a current card data-answers', 'radio-group
+    checkboxButtonsWrapper.forEach( checkboxGroup => {
+      checkboxGroup.setAttribute('data-answers', 'checkbox-group');
+    });
+
     // Get parent radio buttons group by data-answers = radio-group
     const checkboxButtonsParent = cards[currentIndex].querySelectorAll('[data-answers="checkbox-group"]');
 
@@ -96,14 +117,8 @@ const checkOnAnswer = function (card) {
     
       // Check if at least one of the radio buttons is checked
       if (currentCheckboxButtons.length) {
-    
         for (let checkbox of  currentCheckboxButtons ) {
-      
           if (checkbox.checked) groupCounterCheckBox = groupCounterCheckBox + 1;
-            console.log(checkbox.checked)
-              // After iteration 'true' we increace counter
-      
-          console.log(groupCounterCheckBox);
         } 
       }
 
@@ -157,7 +172,7 @@ const cardDisplay = function (goTo, answerWrapper) {
 
   // Function remove error border after click on 'next' 
   const removeErrorBorder = function (goTo, answerWrapper) {
-    if (goTo === 'next') {
+    if (goTo === 'next' && answerWrapper.classList.contains('required')) {
       // Delete error border
       answerWrapper.classList.remove('required');
     }
@@ -218,10 +233,11 @@ const cardDisplay = function (goTo, answerWrapper) {
 const startOnFormClick = function (e) {
   let buttonClicked = e.target;
 
-  // Get answers wrapper
-  const answerWrapper = cards[currentIndex].querySelector('[data-answers]');
+  // Найдем все контейнеры ответов
+  const answerWrapper = cards[currentIndex].querySelectorAll('[data-answers]');
+console.log(answerWrapper);
 
-  // Check if clicked button named 'next'
+  // Проверяем, что нажали кнопку 'Далее'
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'next') {
     const result = checkOnAnswer(cards[currentIndex]);
 
@@ -264,11 +280,14 @@ buttonsNavWrapper.forEach( navWrapper => {
 const submitForm = document.querySelector('#submitForm');
 const telInput = document.querySelector('#tel');
 
-submitForm.onclick = function () {
-  if (telInput.value === '+' || telInput.value.length < 6) {
-    telInput.value = '';
+if (submitForm && telInput) {
+  submitForm.onclick = function () {
+    if (telInput.value === '+' || telInput.value.length < 6) {
+      telInput.value = '';
+    }
   }
 }
+
 
 // phone mask
 mask('#tel');
@@ -276,13 +295,16 @@ mask('#tel');
 // Checbox focus border display by tab
 const checkBoxPolicy = document.querySelector('#policy');
 
-checkBoxPolicy.addEventListener ('focus', function () {
-  this.closest('label').classList.add('hovered');
-});
+if (checkBoxPolicy) {
+  checkBoxPolicy.addEventListener ('focus', function () {
+    this.closest('label').classList.add('hovered');
+  });
+  
+  checkBoxPolicy.addEventListener ('blur', function () {
+    this.closest('label').classList.remove('hovered');
+  });
+}
 
-checkBoxPolicy.addEventListener ('blur', function () {
-  this.closest('label').classList.remove('hovered');
-});
 
 
 
