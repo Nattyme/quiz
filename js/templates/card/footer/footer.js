@@ -5,9 +5,9 @@
 const createFooterTmpl = function () {
 
   // Создаём конструктор футера
-  const CreateFooter = function (type, buttonsArray) {
+  const CreateFooter = function (buttonType, buttonsArray) {
     this.progressBar = createProgressBarTmpl.createProgressBarTmpl(),
-    this.buttons = createButtonTmpl.createButtonTmpl(type, buttonsArray)
+    this.buttons = createButtonTmpl.createButtonTmpl(buttonType, buttonsArray)
   }
 
   // Создаём футер, сохраняем в переменную

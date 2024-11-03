@@ -150,7 +150,7 @@ const updateProgressBar = function (goTo = 'start') {
   const progress = Math.round(currentCard * 100 / cardsToCount) + '%';
  
   progressValue.forEach( item => {
-    item.innerText = progress;
+    item.querySelector('strong').innerText = progress;
   });
 
   progressLineBar.forEach( item => {
