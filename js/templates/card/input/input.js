@@ -1,5 +1,5 @@
 const createInputTmpl = function (cardType, type) {
-  // создаем конструктор атрибутов для интпута
+  // Создаем конструктор для интпута
   const CreateInput = function (cardType, type, classReal, classFake, classLabel, name, text, value, imgFolder = '', imgName = '') {
     this.type = type,
     this.cardType = cardType,
@@ -38,6 +38,7 @@ const createInputTmpl = function (cardType, type) {
     // Создаём пустой массив. В него запишем ссылку на массив radioTitles или checkboxTitles
     let dataTitles = [];
 
+    // Проверяем тип карточки
     cardType === 'radio' ? dataTitles = radioTitles : dataTitles = checkboxTitles;
 
     // Функция обходит массив c заголовками инпута, создаёт объект и добавляет в массив inputArray
@@ -57,7 +58,6 @@ const createInputTmpl = function (cardType, type) {
     // Запускаем функцию
     inputData(dataTitles);
 
-    // const inputRadioTmplArr = [];
     // Заполняем шаблон для страниц radio или checkbox
     for (let i = 0; i < inputArray.length; i++) {
       let inputText = '';
@@ -75,16 +75,17 @@ const createInputTmpl = function (cardType, type) {
 
       const inputTmpl = `
             <label class="${inputArray[i].classLabel}">
-                <input
-                    type="${inputArray[i].type}"
-                    name="${inputArray[i].name}"
-                    class="${inputArray[i].classReal}"
-                    value="${inputArray[i].value}"
-                />
-                <div class="${inputArray[i].classFake}"></div>
-                ${inputText}
+              <input
+                type="${inputArray[i].type}"
+                name="${inputArray[i].name}"
+                class="${inputArray[i].classReal}"
+                value="${inputArray[i].value}"
+              />
+              <div class="${inputArray[i].classFake}"></div>
+              ${inputText}
             </label>`;
 
+      // Добавляем шаблон в массив inputTmplArr
       inputTmplArr.push(inputTmpl);
     }
 
@@ -109,7 +110,7 @@ const createInputTmpl = function (cardType, type) {
     }
 
     inputData(inputArray, getCardsData);
-    
+
     // Заполняем массив inputTmplArr шаблонами инпутов для страниц radio или checkbox
     for (let i = 0; i < inputArray.length; i++) {
         const inputTmpl = `
@@ -136,10 +137,6 @@ const createInputTmpl = function (cardType, type) {
     }
 
   }
-
-
-  // new CreateInput(cardType, type, 'card-block__radio-real', 'card-block__radio-fake', 'card-block__radio', 'image-group', 
-  //   'Мобильные приложения', 'Мобильные приложения', data.imgName, data.imgSrc)
 
   // Возвращаем массив шаблонов, убираем знак ','
   return inputTmplArr.join(' ');

@@ -4,20 +4,26 @@
  // Функция создаёт шаблон футера
 const createFooterTmpl = function () {
 
-  const CreateFooter = function () {
+  // Создаём конструктор футера
+  const CreateFooter = function (type, buttonsArray) {
     this.progressBar = createProgressBarTmpl.createProgressBarTmpl(),
-    this.buttons = createButtonTmpl.createButtonTmpl()
+    this.buttons = createButtonTmpl.createButtonTmpl(type, buttonsArray)
   }
 
-  const footer = new CreateFooter ();
+  // Создаём футер, сохраняем в переменную
+  const footer = new CreateFooter ('button', ['prev', 'next']);
 
+  // Сохраняем шаблон футера 
   const footerTmpl = `
       <footer class="plate-footer">
             ${footer.progressBar}
+        <div class="plate-footer__buttons">
             ${footer.buttons}
-        </footer>
+        </div>
+      </footer>
   `;
 
+  // Возращаем шаблон
   return footerTmpl;
 }
 

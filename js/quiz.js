@@ -10,8 +10,6 @@ const cardsTmpl = [];
 cardsTmpl.push(createCards.createCards('radio', 'radio', 'Что означает сокращение HTML?'));
 cardsTmpl.push(createCards.createCards('checkbox', 'checkbox', 'Что означает сокращение HTML?'));
 cardsTmpl.push(createCards.createCards('cards', 'radio', 'На HTML можно создавать: '));
-// cardsTmpl.push(createCards.createCards('radio'));
-
 
 // Обходим каждую карточку и выводим на страницу
 // Здесь карточки приходят как HTMl, нельзя менять класс. 
@@ -21,117 +19,125 @@ cardsTmpl.forEach( card => {
 
 const cards = document.querySelectorAll('.plate');
 
-// Find navigation buttons
+// Найдём контейнер с кнопками навигации
 const buttonsNavWrapper = document.querySelectorAll('.plate-footer__buttons');
 
-
-// Current index for cards move
+// Объявляем текущий индекс для карточек
 let currentIndex = 0;
 
-// Current index for progress bar
+// Объявляем текущий индекс для прогресс бара
 let currentCard = 0;
 
-// Hide all cards
+// Скрываем все карточки
 cards.forEach((card, index) => {
   card.classList.add('none');
+
+  // Покажем 1-ю карточку
   if (index === currentIndex) {
     card.classList.remove('none');
     card.classList.add('visible');
+
+    // Скрываем кнопку 'Назад' на первой карточке
+    card.querySelector('[data-nav="prev"]').remove();
   }
 });
 
 
-// Get the first card button "back" and delete it
-cards[currentIndex].querySelector('[data-nav="prev"]').remove();
-
-
-// Function checks the current answer
+// Функция проверят ответы в инпутах
 const checkOnAnswer = function (card) {
-  const radioButtons = card.querySelectorAll('input[type="radio"]');   // Get all radio buttons
-  const checkboxButtons = card.querySelectorAll('input[type="checkbox"]');   // Get all checkbox buttons
-  const radioButtonsWrapper = card.querySelectorAll('.radio-group'); // Get answers wrapper
-  const checkboxButtonsWrapper = card.querySelectorAll('.checkbox-group'); // Get answers wrapper
+  // Получаем все радио кнопки
+  const radioButtons = card.querySelectorAll('input[type="radio"]');   
+  // Получаем все чекбоксы
+  const checkboxButtons = card.querySelectorAll('input[type="checkbox"]');  
 
+  // Для несколькх вопросов : получим все блоки вопросов на странице
+  const answerBlocks = card.querySelectorAll('.plate-content');
+
+  // Если найдены радиокнопки
   if (radioButtons.length) {
-    // Set attr 'data-radio' for each radio button on a current card
+    // Задаём аттрибут 'data-radio' для каждой радио кнопки текущей карточки
     radioButtons.forEach( radioButton => {
       radioButton.setAttribute('data-radio', '');
     });
 
-    // Set attr for each radioButtonsWrapper of radio buttons on a current card data-answers', 'radio-group
-    radioButtonsWrapper.forEach( radioGroup => {
-      radioGroup.setAttribute('data-answers', 'radio-group');
+    // Для нескольких блоков с вопросами на странице: Родительскому элементу блока радио кнопок задаём атрибут data-answers = radio-block
+    answerBlocks.forEach( block => {
+      block.setAttribute('data-block', 'radio');
     });
 
-  
-    // Get parents radio buttons group by data-answers = radio-group
-    const radioButtonsParent = cards[currentIndex].querySelectorAll('[data-answers="radio-group"]');
+    // Счётчик проверенных блоков
+    let blocksChecked = 0;
 
-    // Let's count here q-ty of groups
-    let groupsChecked = 0;
+    // Для нескольких блоков с вопросами на странице: в каждой группе кнопок проверяем, сколько было выбранных
+    answerBlocks.forEach( block => {
+      // Находим текущий блок с кнопками
+      let currentRadioButtons = block.querySelectorAll('[data-radio]');
 
-    // For each group we check buttons and count how many 'true' back
-    radioButtonsParent.forEach( radioGroup => {
-      let currentRadioButtons = radioGroup.querySelectorAll('[data-radio]');
-    
-      // Check if at least one of the radio buttons is checked
+      // Проверяем, что одна кнопка выбрана
       if (currentRadioButtons.length) {
-    
-        for (let radio of  currentRadioButtons) {
-          if (radio.checked) {
-            groupsChecked = groupsChecked + 1;
-          }
-
-        } 
+        // Если кнопки с св-вом checked не найдены - добавить рамку error, вернуть false. 
+        if (!Array.from(currentRadioButtons).find((button) => button.checked)) {
+          block.querySelector('[data-answers]').classList.add('required');
+       
+          return false;
+        } else {
+          // Удаляем рамку, увеличиваем счётчик
+          block.querySelector('[data-answers]').classList.remove('required');
+          blocksChecked = blocksChecked + 1;
+        }
       }
-
-    
     });
 
-    if (groupsChecked === radioButtonsParent.length) {
+    // Если кол-во выбранных кнопок равно кол-ву блоков - возвращаем true
+    if (blocksChecked === answerBlocks.length) {
       return true;
     } 
   
   } 
   
+  // Если найдены чекбоксы
   if (checkboxButtons.length) {
-    // Set attr 'data-checkbox' for each checkbox button on a current card
+ 
+    // // Задаём аттрибут 'data-checkbox' для каждого чекбокса текущей карточки
     checkboxButtons.forEach( checkboxButton => {
       checkboxButton.setAttribute('data-checkbox', '');
     });
 
-    // Set attr for each checkboxButtonsWrapper of radio buttons on a current card data-answers', 'radio-group
-    checkboxButtonsWrapper.forEach( checkboxGroup => {
-      checkboxGroup.setAttribute('data-answers', 'checkbox-group');
-    });
+    // Для нескольких блоков с вопросами на странице: Родительскому элементу блока радио кнопок задаём атрибут data-answers = checkbox-block
+    // answerBlocks.forEach( block => {
+    //   block.closest('.plate-content').setAttribute('data-answers', 'checkbox-block');
+    // });
 
-    // Get parent radio buttons group by data-answers = radio-group
-    const checkboxButtonsParent = cards[currentIndex].querySelectorAll('[data-answers="checkbox-group"]');
+    // Счетчик для ответов в группах чекбоксов
+    let blocksChecked = 0;
 
-    // Let's count here q-ty of groups
-    let groupCounterCheckBox = 0;
+    // Для нескольких блоков с вопросами на странице: в каждой группе кнопок проверяем, сколько было выбранных
+    answerBlocks.forEach( block => {
+      let currentCheckboxButtons = block.querySelectorAll('[data-checkbox]');
 
-    // For each group we check buttons and count how many 'true' back
-    checkboxButtonsParent.forEach( checkboxGroup => {
-      let currentCheckboxButtons = checkboxGroup.querySelectorAll('[data-checkbox]');
-    
-      // Check if at least one of the radio buttons is checked
+      // Проверяем, что хотя бы одна кнопка выбрана
       if (currentCheckboxButtons.length) {
-        for (let checkbox of  currentCheckboxButtons ) {
-          if (checkbox.checked) groupCounterCheckBox = groupCounterCheckBox + 1;
-        } 
+        // Если кнопки с св-вом checked не найдены - добавить рамку error, вернуть false. 
+        if (!Array.from(currentCheckboxButtons).find((button) => button.checked)) {
+          block.querySelector('.checkbox-group').classList.add('required');
+       
+          return false;
+        } else {
+          // Удаляем рамку, увеличиваем счётчик
+          block.querySelector('.checkbox-group').classList.remove('required');
+          blocksChecked = blocksChecked + 1;
+        }
       }
-
-    
     });
 
-    if (groupCounterCheckBox === checkboxButtonsParent.length) {
+    // Если кол-во выбранных кнопок равно кол-ву блоков - возвращаем true
+    if (blocksChecked === answerBlocks.length) {
       return true;
-    } 
+    }
   } 
 }
 
-// Function controls progress - bar
+// Функция контролирует прогресс - бар
 const updateProgressBar = function (goTo = 'start') {
   // In case we go to the next card
   if ( goTo === 'next') {
@@ -158,7 +164,7 @@ const updateProgressBar = function (goTo = 'start') {
   
 }
 
-// Funtion display and hide cards with slow mode animation
+// Функция показывает и прячет карточки с анимацией
 const cardDisplay = function (goTo, answerWrapper) {
   
   // Function count current index
@@ -168,14 +174,6 @@ const cardDisplay = function (goTo, answerWrapper) {
       } else if (goTo === 'prev') {
         currentIndex =  currentIndex - 1;
       }
-  }
-
-  // Function remove error border after click on 'next' 
-  const removeErrorBorder = function (goTo, answerWrapper) {
-    if (goTo === 'next' && answerWrapper.classList.contains('required')) {
-      // Delete error border
-      answerWrapper.classList.remove('required');
-    }
   }
 
   // Animation for card display
@@ -217,8 +215,6 @@ const cardDisplay = function (goTo, answerWrapper) {
       // Fully hide current card
       hideCard(500);
   
-      removeErrorBorder(goTo, answerWrapper);
-  
     }, ms);
   }
   
@@ -229,21 +225,19 @@ const cardDisplay = function (goTo, answerWrapper) {
   startingCardsHandling(500);
 }
 
-// Function start actions after click on form 
+// Функция запускает действия по клику на форму
 const startOnFormClick = function (e) {
   let buttonClicked = e.target;
 
   // Найдем все контейнеры ответов
   const answerWrapper = cards[currentIndex].querySelectorAll('[data-answers]');
-console.log(answerWrapper);
+
 
   // Проверяем, что нажали кнопку 'Далее'
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'next') {
-    const result = checkOnAnswer(cards[currentIndex]);
-
-    // Display error border
-    if ( !result ) {
-      answerWrapper.classList.add('required');
+    // Если проверка ответа вернула false  - завершить программу
+    if ( !checkOnAnswer(cards[currentIndex]) ) {
+      // answerWrapper.classList.add('required');
       return;
     }
 
@@ -264,22 +258,24 @@ console.log(answerWrapper);
   }
 }
 
-// For the start progress-bar display 0%
+// Запускаем функцию скролл бара. На старте 0%
 updateProgressBar();
 
-// For each nav buttons wrapper we add listener of a 'click' event
+// Добавляем прослушивание клика на контейнер с кнопками навигации
 buttonsNavWrapper.forEach( navWrapper => {
   navWrapper.addEventListener('click', function (e) {
-     // Function start actions on click
+
+    // Функция запускает действия по клику
     startOnFormClick(e);
   });
 });
  
   
-// Form validate
+// Валидация формы
 const submitForm = document.querySelector('#submitForm');
 const telInput = document.querySelector('#tel');
 
+// Если найдена форма и поле телефона - отслеживаем действие 'submit'
 if (submitForm && telInput) {
   submitForm.onclick = function () {
     if (telInput.value === '+' || telInput.value.length < 6) {
@@ -288,18 +284,20 @@ if (submitForm && telInput) {
   }
 }
 
-
-// phone mask
+// Маска номера телефона
 mask('#tel');
 
-// Checbox focus border display by tab
+// Находим чекбокс
 const checkBoxPolicy = document.querySelector('#policy');
 
+// Если чекбокс найден
 if (checkBoxPolicy) {
+  // Отслеживаем фокус и доб. класс
   checkBoxPolicy.addEventListener ('focus', function () {
     this.closest('label').classList.add('hovered');
   });
   
+  // Отслеживаем выход из фокуса, удаляем класс
   checkBoxPolicy.addEventListener ('blur', function () {
     this.closest('label').classList.remove('hovered');
   });
