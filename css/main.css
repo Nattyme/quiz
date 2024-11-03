@@ -405,6 +405,10 @@ box-shadow: 0px 1px 30px 0px rgba(9, 172, 12, 1);
 }
 
 
+[data-answers] {
+  border: 1px solid transparent;
+  padding: 15px;
+}
 
 
 .plate-footer {

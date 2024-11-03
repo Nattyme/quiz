@@ -52,9 +52,9 @@ const checkOnAnswer = function (card) {
 
   // Для несколькх вопросов : получим все блоки вопросов на странице
   const answerBlocks = card.querySelectorAll('.plate-content');
-
+  
   // Если найдены радиокнопки
-  if (radioButtons.length) {
+  if (radioButtons.length ) {
     // Задаём аттрибут 'data-radio' для каждой радио кнопки текущей карточки
     radioButtons.forEach( radioButton => {
       radioButton.setAttribute('data-radio', '');
@@ -102,11 +102,6 @@ const checkOnAnswer = function (card) {
     checkboxButtons.forEach( checkboxButton => {
       checkboxButton.setAttribute('data-checkbox', '');
     });
-
-    // Для нескольких блоков с вопросами на странице: Родительскому элементу блока радио кнопок задаём атрибут data-answers = checkbox-block
-    // answerBlocks.forEach( block => {
-    //   block.closest('.plate-content').setAttribute('data-answers', 'checkbox-block');
-    // });
 
     // Счетчик для ответов в группах чекбоксов
     let blocksChecked = 0;
