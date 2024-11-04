@@ -1,5 +1,5 @@
 // Template
-import createCards from './modules/create-card/create-cards.js';
+import createCards from './functions/create-cards.js';
 import createFormTmpl from './templates/form/form.js';
 
 // Вызываем функцию создания карточек и записываем результат в переменную

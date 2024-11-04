@@ -1,6 +1,6 @@
-const createInputTmpl = function (cardType, type) {
+const createInputTmpl = function (cardType, type, classReal, classFake, classLabel, name,  text, value, imgFolder, imgName) {
   // Создаем конструктор для интпута
-  const CreateInput = function (cardType, type, classReal, classFake, classLabel, name, text, value, imgFolder = '', imgName = '') {
+  const CreateInput = function (cardType, type, classReal, classFake, classLabel, name, text, value, imgFolder, imgName) {
     this.type = type,
     this.cardType = cardType,
     this.classReal = classReal,
@@ -10,7 +10,8 @@ const createInputTmpl = function (cardType, type) {
     this.text = text,
     this.value = value,
     this.imgFolder = imgFolder,
-    this.imgName = imgName
+    this.imgName = imgName,
+    this.imgSrc = imgFolder + imgName
   };
 
   // Создаём массив с данными об инпутах
@@ -19,49 +20,17 @@ const createInputTmpl = function (cardType, type) {
   // Создаём массив шаблонов для инпутов
   let inputTmplArr = [];
 
+  for (let i = 0; i < text.length; i++) {
+    inputArray.push(new CreateInput(cardType, type, classReal.join(' '), classFake ? classFake.join(' ') : '', classLabel.join(' '), 
+    name, text[i], value[i], imgFolder[0], imgName[i]));
+  }
+
   // Если тип карточки 'radio' или 'checkbox' - используем шаблон
   if (cardType === 'radio' || cardType === 'checkbox') {
-    const radioTitles = [
-      'Hero Tutorial Multi Level', 
-      'Hyper Text Markup Language', 
-      'High Task Mirage Language', 
-      'HTML не имеет расшифровки. Это военная разработка.'
-    ];
-
-    const checkboxTitles = [
-      'Hero Tutorial Multi Level', 
-      'Hyper Text Markup Language', 
-      'High Task Mirage Language', 
-      'HTML не имеет расшифровки. Это военная разработка.'
-    ]
-
-    // Создаём пустой массив. В него запишем ссылку на массив radioTitles или checkboxTitles
-    let dataTitles = [];
-
-    // Проверяем тип карточки
-    cardType === 'radio' ? dataTitles = radioTitles : dataTitles = checkboxTitles;
-
-    // Функция обходит массив c заголовками инпута, создаёт объект и добавляет в массив inputArray
-    const inputData = function (titleArr) {
-
-      titleArr.forEach ( title => {
-        if ( type === 'radio') {
-          inputArray.push(new CreateInput(cardType, type, 'radio-block__real', 'radio-block__fake', 'radio-block', 'what-html-means', title, title));
-        } 
-
-        if (type === 'checkbox') {
-          inputArray.push(new CreateInput(cardType, type, 'checkbox-block__real', 'checkbox-block__fake', 'checkbox-block', 'what-html-means', title, title));
-        }
-      })
-    }
-
-    // Запускаем функцию
-    inputData(dataTitles);
-
     // Заполняем шаблон для страниц radio или checkbox
     for (let i = 0; i < inputArray.length; i++) {
       let inputText = '';
-      if (inputArray[i].type === 'radio') {
+      if (type === 'radio') {
         inputText = inputArray[i].text;
       };
 
@@ -88,36 +57,18 @@ const createInputTmpl = function (cardType, type) {
       // Добавляем шаблон в массив inputTmplArr
       inputTmplArr.push(inputTmpl);
     }
-
   }
   
-  // Если тип карточки 'card' - используем шаблон
+  // // Если тип карточки 'card' - используем шаблон
   if ( cardType === 'cards') {
-    const getCardsData =  [
-      {title : 'Мобильные приложения', imgFolder : 'img/pictures/', imgName : 'mobile.jpg'},
-      {title : 'Сайты для всех браузеров и платформ', imgFolder : 'img/pictures/', imgName : 'browser.jpg'},
-      {title : 'Программы для Windows', imgFolder : 'img/pictures/', imgName : 'windows.jpg'},
-      {title : 'Программы для Linux', imgFolder : 'img/pictures/', imgName : 'linux.jpg'}
-    ];
- 
-    
-    // Функция заполняет массив данными о карточке
-    const inputData = function (inputArray, getCardsData) {
-      getCardsData.forEach( data => {
-        inputArray.push(new CreateInput(cardType, type, 'card-block__radio-real', 'card-block__radio-fake', 'card-block__radio', 'image-group', 
-          data.title, data.title, data.imgFolder, data.imgName));
-      })
-    }
-
-    inputData(inputArray, getCardsData);
-
-    // Заполняем массив inputTmplArr шаблонами инпутов для страниц radio или checkbox
+  
+    // Заполняем массив inputTmplArr шаблонами инпутов 
     for (let i = 0; i < inputArray.length; i++) {
         const inputTmpl = `
-           <label class="card-block">
+           <label class="${inputArray[i].classLabel}">
               <div class="card-block__radio">
                   <input
-                      name="image-group"
+                      name="${inputArray[i].name}"
                       type="${inputArray[i].type}"
                       class="${inputArray[i].classReal}"
                       value="${inputArray[i].value}"
@@ -125,7 +76,7 @@ const createInputTmpl = function (cardType, type) {
                   <div class="${inputArray[i].classFake}"></div>
               </div>
               <div class="card-block__img">
-                  <img src="${inputArray[i].imgFolder + inputArray[i].imgName}" alt="Img" />
+                  <img src="${inputArray[i].imgSrc}" alt="Img" />
               </div>
               <div class="card-block__text">
                   ${inputArray[i].text}
