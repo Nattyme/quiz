@@ -1,30 +1,29 @@
 // Template
-import createCards from './modules/create-card/cards.js';
+import createCards from './modules/create-card/create-cards.js';
+import createFormTmpl from './templates/form/form.js';
 
+// Вызываем функцию создания карточек и записываем результат в переменную
+const cardsTmpl = createCards.createCards();
+// Вызываем функцию создания формы и записываем результат в переменную
+const formTmpl = createFormTmpl.createFormTmpl();
 
-// // Get a form
+// Находим форму на  странице
 const form = document.querySelector('.quiz-form');
 
-// Заполняем массив карточками
-const cardsTmpl = [];
-cardsTmpl.push(createCards.createCards('radio', 'radio', 'Что означает сокращение HTML?'));
-cardsTmpl.push(createCards.createCards('checkbox', 'checkbox', 'Что означает сокращение HTML?'));
-cardsTmpl.push(createCards.createCards('cards', 'radio', 'На HTML можно создавать: '));
+// Добавляем карточки на страницу
+form.insertAdjacentHTML('beforeend', cardsTmpl);
+// Добавляем форму на страницу
+form.insertAdjacentHTML('beforeend', formTmpl);
 
-// Обходим каждую карточку и выводим на страницу
-// Здесь карточки приходят как HTMl, нельзя менять класс. 
-cardsTmpl.forEach( card => {
-  form.insertAdjacentHTML('beforeend', card);
-});
 
+// Сохраним все добавленные карточки в переменную 
 const cards = document.querySelectorAll('.plate');
-
 // Найдём контейнер с кнопками навигации
 const buttonsNavWrapper = document.querySelectorAll('.plate-footer__buttons');
 
+
 // Объявляем текущий индекс для карточек
 let currentIndex = 0;
-
 // Объявляем текущий индекс для прогресс бара
 let currentCard = 0;
 
@@ -134,12 +133,12 @@ const checkOnAnswer = function (card) {
 
 // Функция контролирует прогресс - бар
 const updateProgressBar = function (goTo = 'start') {
-  // In case we go to the next card
+  // Если нажали кнопку 'Далее'
   if ( goTo === 'next') {
     currentCard = currentCard + 1;
   } 
 
-  // In case we go to the prev card
+  // Если нажали кнопку 'Назад'
   if (goTo === 'prev') {
     currentCard = currentCard - 1;
   }
@@ -160,7 +159,7 @@ const updateProgressBar = function (goTo = 'start') {
 }
 
 // Функция показывает и прячет карточки с анимацией
-const cardDisplay = function (goTo, answerWrapper) {
+const cardDisplay = function (goTo) {
   
   // Function count current index
   const cardIndex = function (goTo) {
@@ -249,7 +248,7 @@ const startOnFormClick = function (e) {
      updateProgressBar('prev');
 
      // Display prev card slow mode
-     cardDisplay('prev', answerWrapper);
+     cardDisplay('prev');
   }
 }
 
