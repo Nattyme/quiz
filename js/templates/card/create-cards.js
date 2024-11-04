@@ -1,6 +1,6 @@
-import createHeaderTmpl from '../templates/card/header/header.js';
-import createFooterTmpl from '../templates/card/footer/footer.js';
-import createContentTmpl from '../templates/card/content/content.js';
+import createHeaderTmpl from './header/header.js';
+import createFooterTmpl from './footer/footer.js';
+import createContentTmpl from './content/content.js';
 
 // Функция создаёт карточки 
 const createCards = function () {

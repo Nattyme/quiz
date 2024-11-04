@@ -1,5 +1,5 @@
-// Template
-import createCards from './functions/create-cards.js';
+// Получим шаблоны карточек и формы
+import createCards from './templates/card/create-cards.js';
 import createFormTmpl from './templates/form/form.js';
 
 // Вызываем функцию создания карточек и записываем результат в переменную
@@ -12,7 +12,7 @@ const form = document.querySelector('.quiz-form');
 
 // Добавляем карточки на страницу
 form.insertAdjacentHTML('beforeend', cardsTmpl);
-// Добавляем форму на страницу
+// Добавляем форму обратной связи на страницу
 form.insertAdjacentHTML('beforeend', formTmpl);
 
 
@@ -41,6 +41,94 @@ cards.forEach((card, index) => {
   }
 });
 
+
+// Функция контролирует прогресс - бар
+const updateProgressBar = function (goTo = 'start') {
+  // Если нажали кнопку 'Далее'
+  if ( goTo === 'next') {
+    currentCard = currentCard + 1;
+  } 
+
+  // Если нажали кнопку 'Назад'
+  if (goTo === 'prev') {
+    currentCard = currentCard - 1;
+  }
+
+  const progressValue = document.querySelectorAll('.progress__label');
+  const progressLineBar = document.querySelectorAll('.progress__line-bar');
+  const cardsToCount = document.querySelectorAll('[data-progress]').length;
+  const progress = Math.round(currentCard * 100 / cardsToCount) + '%';
+ 
+  progressValue.forEach( item => {
+    item.querySelector('strong').innerText = progress;
+  });
+
+  progressLineBar.forEach( item => {
+    item.style.width = progress;
+  });
+  
+}
+
+// Функция показывает и прячет карточки с анимацией
+const cardDisplay = function (goTo) {
+  
+  // Функция считает текущ. индекс
+  const cardIndex = function (goTo) {
+      if (goTo === 'next') {
+        currentIndex =  currentIndex + 1;
+      } else if (goTo === 'prev') {
+        currentIndex =  currentIndex - 1;
+      }
+  }
+
+  // Анимация для показа карточки
+  const animatedCardDisplay = function (ms) {
+    setTimeout( function () {
+      cards[currentIndex].classList.add('visible');
+    }, ms);
+  }
+
+  // Функция скрывает текущую карточку
+  const hideCard = function (ms) {
+
+    setTimeout( function () {
+
+      // Функция полностью скрывает текущую карточку
+      cards[currentIndex].classList.add('none');
+
+      // Считаем индекс в завис-ти. от goTo
+      cardIndex(goTo);
+
+      // Показываем карточку
+      cards[currentIndex].classList.remove('none');
+
+      // Показываем карточку с анимацией
+      animatedCardDisplay(100);
+
+    }, ms);
+
+  }
+
+  // Function start cards handling
+  const startingCardsHandling = function (ms) {
+
+    setTimeout( function () {
+
+      // Скрываем текущ. карточку с анимацией
+      cards[currentIndex].classList.remove('visible');
+  
+      // Полностью скрываем текущую карточку
+      hideCard(500);
+  
+    }, ms);
+  }
+  
+  // If we go to prev card but index = 0 - stop function
+  if ( goTo === 'prev' && currentIndex === 0) return;
+
+  // Start cards handling with slow mode 500ms 
+  startingCardsHandling(500);
+}
 
 // Функция проверят ответы в инпутах
 const checkOnAnswer = function (card) {
@@ -131,94 +219,6 @@ const checkOnAnswer = function (card) {
   } 
 }
 
-// Функция контролирует прогресс - бар
-const updateProgressBar = function (goTo = 'start') {
-  // Если нажали кнопку 'Далее'
-  if ( goTo === 'next') {
-    currentCard = currentCard + 1;
-  } 
-
-  // Если нажали кнопку 'Назад'
-  if (goTo === 'prev') {
-    currentCard = currentCard - 1;
-  }
-
-  const progressValue = document.querySelectorAll('.progress__label');
-  const progressLineBar = document.querySelectorAll('.progress__line-bar');
-  const cardsToCount = document.querySelectorAll('[data-progress]').length;
-  const progress = Math.round(currentCard * 100 / cardsToCount) + '%';
- 
-  progressValue.forEach( item => {
-    item.querySelector('strong').innerText = progress;
-  });
-
-  progressLineBar.forEach( item => {
-    item.style.width = progress;
-  });
-  
-}
-
-// Функция показывает и прячет карточки с анимацией
-const cardDisplay = function (goTo) {
-  
-  // Function count current index
-  const cardIndex = function (goTo) {
-      if (goTo === 'next') {
-        currentIndex =  currentIndex + 1;
-      } else if (goTo === 'prev') {
-        currentIndex =  currentIndex - 1;
-      }
-  }
-
-  // Animation for card display
-  const animatedCardDisplay = function (ms) {
-    setTimeout( function () {
-      cards[currentIndex].classList.add('visible');
-    }, ms);
-  }
-
-  // Function hide current card fully
-  const hideCard = function (ms) {
-
-    setTimeout( function () {
-
-      // Hide current card fully
-      cards[currentIndex].classList.add('none');
-
-      // Count index depend on goTo
-      cardIndex(goTo);
-
-      // Display card. Prepare for animation
-      cards[currentIndex].classList.remove('none');
-
-      // Display the prev card with animation
-      animatedCardDisplay(100);
-
-    }, ms);
-
-  }
-
-  // Function start cards handling
-  const startingCardsHandling = function (ms) {
-
-    setTimeout( function () {
-
-      // Hide current card with animation
-      cards[currentIndex].classList.remove('visible');
-  
-      // Fully hide current card
-      hideCard(500);
-  
-    }, ms);
-  }
-  
-  // If we go to prev card but index = 0 - stop function
-  if ( goTo === 'prev' && currentIndex === 0) return;
-
-  // Start cards handling with slow mode 500ms 
-  startingCardsHandling(500);
-}
-
 // Функция запускает действия по клику на форму
 const startOnFormClick = function (e) {
   let buttonClicked = e.target;
@@ -242,12 +242,12 @@ const startOnFormClick = function (e) {
     cardDisplay('next', answerWrapper);
   }
 
-  // Check if clicked button named 'back'
+  // Проверяем, что нажали кнопку 'Назад'
   if (buttonClicked.hasAttribute('data-nav') && buttonClicked.getAttribute('data-nav') === 'prev') {
-     // Progress - bar
+     // Обновляем прогресс бар
      updateProgressBar('prev');
 
-     // Display prev card slow mode
+     // Показываем предыдущую карточку с анимацией
      cardDisplay('prev');
   }
 }
@@ -258,7 +258,6 @@ updateProgressBar();
 // Добавляем прослушивание клика на контейнер с кнопками навигации
 buttonsNavWrapper.forEach( navWrapper => {
   navWrapper.addEventListener('click', function (e) {
-
     // Функция запускает действия по клику
     startOnFormClick(e);
   });
@@ -267,7 +266,7 @@ buttonsNavWrapper.forEach( navWrapper => {
   
 // Валидация формы
 const submitForm = document.querySelector('#submitForm');
-const telInput = document.querySelector('#tel');
+const telInput = document.querySelector('#phone');
 
 // Если найдена форма и поле телефона - отслеживаем действие 'submit'
 if (submitForm && telInput) {
@@ -279,7 +278,7 @@ if (submitForm && telInput) {
 }
 
 // Маска номера телефона
-mask('#tel');
+mask('#phone');
 
 // Находим чекбокс
 const checkBoxPolicy = document.querySelector('#policy');
