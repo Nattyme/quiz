@@ -36,8 +36,7 @@ const createCheckboxTmpl = function (checkboxIdArray) {
 
       checkboxTmplArr.push(checkboxTmpl);
   });
-  console.log(checkboxes)
-console.log(checkboxTmplArr)
+
   // Возвращаем массив кнопок без запятых
   return checkboxTmplArr.join(' ');
 }

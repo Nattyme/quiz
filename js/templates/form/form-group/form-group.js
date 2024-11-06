@@ -22,8 +22,6 @@ const createFormGroupTmpl = function (formGroup, formGroupId) {
   // Обойдем параметр type и проверим, какие пришли значения. По результату выберем парам-ры
   for (let i = 0; i < formGroup.length; i++) {
     if (formGroup[i] === 'name') {
-      console.log( formGroupId)
-      console.log( formGroupId[i])
       formGroupArray.push(new CreateFormGroup (['input', 'input--user'], 'text', formGroupId[i], 'name', 'Имя', 'required', 'off' ));
     }
    

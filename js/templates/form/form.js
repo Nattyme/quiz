@@ -1,6 +1,6 @@
 import createFormImgTmpl from './img/img.js';
 import createFormGroupTmpl from './form-group/form-group.js';
-import createCheckboxTmpl from './checkbox/checkbox.js'
+import createCheckboxTmpl from './checkbox/checkbox.js';
 import createFormButtonTmpl from './buttons/buttons.js';
 
  // Функция создаёт шаблона формы
@@ -15,7 +15,7 @@ import createFormButtonTmpl from './buttons/buttons.js';
 
   const form = new CreateForm('Отлично! Последний шаг!', 'submit', ['result'], ['name', 'email', 'phone'], 
     ['name', 'email', 'phone'], ['policy']);
-  console.log(form.formGroup);
+
 
   // Создаём form
   const formTmpl = `

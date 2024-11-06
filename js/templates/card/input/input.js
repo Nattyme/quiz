@@ -1,3 +1,21 @@
+/** 
+ * @param {string} cardType - The type of card or context related to the input field. This can be used for styling or additional logic.
+ * @param {string} type - The type of the input element (e.g., "text", "radio", "checkbox").
+ * @param {string} classReal - The CSS class for the real input element.
+ * @param {string} classFake - The CSS class for the fake or helper element that might be used for custom styling (e.g., custom radio buttons).
+ * @param {string} classLabel - The CSS class for the label element associated with the input.
+ * @param {string} name - The name attribute for the input field, used in form submissions.
+ * @param {string} text - The label text displayed next to the input (used for radio buttons, checkboxes, etc.).
+ * @param {string} value - The value associated with the input field (e.g., for radio buttons or checkboxes).
+ * @param {string} imgFolder - The folder path where images related to the input are stored.
+ * @param {string} imgName - The specific image file name to associate with the input (e.g., logo for payment methods).
+ * 
+ * @returns {Object} - An object containing the following properties:
+ *   - `type` (string): The type of the input element (e.g., "text", "radio").
+ *   - `cardType` (string): The type of card/context.
+*/
+
+
 const createInputTmpl = function (cardType, type, classReal, classFake, classLabel, name,  text, value, imgFolder, imgName) {
   // Создаем конструктор для интпута
   const CreateInput = function (cardType, type, classReal, classFake, classLabel, name, text, value, imgFolder, imgName) {
